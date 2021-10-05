@@ -1,2 +1,3 @@
 language = "c"
-run = "gcc -Wall -DDEBUG -g bmpFilter.c \n ./a.out < ./images/orig-byu.bmp"
+run = "gcc -Wall -DDEBUG -g bmpFilter.c \n ./a.out < ./sq.bmp" 
+# > filtered_tiny_square.bmp

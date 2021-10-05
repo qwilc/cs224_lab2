@@ -1,0 +1,7 @@
+fileSizeInBytes = 1086
+in parseHeaderAndApplyFilteroffsetFirstBytePixelArray = 1078
+width = 2
+height = 2
+pixelArray = 0x555d65d0d280
+padding = 2
+in applyFilterToRowin applyFilterToPixelin applyThresholdToPixelin applyFilterToPixelin applyThresholdToPixelin applyFilterToRowin applyFilterToPixelin applyThresholdToPixelin applyFilterToPixelin applyThresholdToPixel

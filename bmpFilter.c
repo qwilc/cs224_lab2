@@ -61,29 +61,59 @@ void getBmpFileAsBytes(unsigned char* ptr, unsigned fileSizeInBytes, FILE* strea
 }
 
 unsigned char getAverageIntensity(unsigned char blue, unsigned char green, unsigned char red) {
-  printf("TODO: unsigned char getAverageIntensity(unsigned char blue, unsigned char green, unsigned char red)\n");
-  return 0;
+  return (blue + green + red) / 3;
 }
 
 void applyGrayscaleToPixel(unsigned char* pixel) {
-  printf("TODO: void applyGrayscaleToPixel(unsigned char* pixel)\n");
+	char b = *pixel;
+	char g = *(pixel + 1);
+	char r = *(pixel + 2);
+	char avg = getAverageIntensity(b, g, r);
+
+	*pixel = avg;
+	*(pixel + 1) = avg;
+	*(pixel + 2) = avg;
 }
 
 void applyThresholdToPixel(unsigned char* pixel) {
-  printf("TODO: void applyThresholdToPixel(unsigned char* pixel)\n");
+	//printf("in applyThresholdToPixel\n");
+	unsigned char b = *pixel;
+	unsigned char g = *(pixel + 1);
+	unsigned char r = *(pixel + 2);
+	unsigned char avg = getAverageIntensity(b, g, r);
+
+	if(avg > 128) {
+		*pixel = 255;
+		*(pixel + 1) = 255;
+		*(pixel + 2) = 255;
+	}
+	else {
+		*pixel = 0;
+		*(pixel + 1) = 0;
+		*(pixel + 2) = 0;
+	}
 }
 
 void applyFilterToPixel(unsigned char* pixel, int isGrayscale) {
-  printf("TODO: void applyFilterToPixel(unsigned char* pixel, int isGrayscale)\n");
+	//printf("in applyFilterToPixel\n");
+	if(isGrayscale) {
+		applyGrayscaleToPixel(pixel);
+	}
+	else {
+		applyThresholdToPixel(pixel);
+	}
 }
 
 void applyFilterToRow(unsigned char* row, int width, int isGrayscale) {
-  printf("TODO: void applyFilterToRow(unsigned char* row, int width, int isGrayscale)\n");
+	//printf("in applyFilterToRow\n");
+	for(int i = 0; i < width; i++) {
+		applyFilterToPixel(row + 3*i, isGrayscale);
+	}
 }
 
 void applyFilterToPixelArray(unsigned char* pixelArray, int width, int height, int isGrayscale) {
   int padding = 0;
-  padding = 4 - ((width*3)%4);
+  padding = (4 - ((width*3) % 4)) % 4;
 
 #ifdef DEBUG
   printf("padding = %d\n", padding);
@@ -102,9 +132,9 @@ void parseHeaderAndApplyFilter(unsigned char* bmpFileAsBytes, int isGrayscale) {
   unsigned char* pixelArray = NULL;
 
   offsetFirstBytePixelArray = *(int*)(bmpFileAsBytes+10);
-  width = *(int*) (bmpFileAsBytes+4);
-  height = *(int*) (bmpFileAsBytes+8);
-  pixelArray = bmpFileAsBytes;
+  width = *(int*)(bmpFileAsBytes+18);
+  height = *(int*)(bmpFileAsBytes+22);
+  pixelArray = bmpFileAsBytes + offsetFirstBytePixelArray;
 
 #ifdef DEBUG
   printf("offsetFirstBytePixelArray = %u\n", offsetFirstBytePixelArray);
