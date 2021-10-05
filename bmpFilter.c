@@ -27,7 +27,7 @@ FILE *parseCommandLine(int argc, char **argv, int *isGrayscale) {
     printf("Usage: %s [-g]\n", argv[0]);
     exit(BAD_NUMBER_ARGS);
   }
-  
+
   if (argc == 2 && strcmp(argv[1], "-g") == 0) {
     *isGrayscale = TRUE;
   } else {
@@ -39,7 +39,7 @@ FILE *parseCommandLine(int argc, char **argv, int *isGrayscale) {
 
 unsigned getFileSizeInBytes(FILE* stream) {
   unsigned fileSizeInBytes = 0;
-  
+
   rewind(stream);
   if (fseek(stream, 0L, SEEK_END) != 0) {
     exit(FSEEK_ERROR);
@@ -83,13 +83,16 @@ void applyFilterToRow(unsigned char* row, int width, int isGrayscale) {
 
 void applyFilterToPixelArray(unsigned char* pixelArray, int width, int height, int isGrayscale) {
   int padding = 0;
-  printf("TODO: compute the required amount of padding from the image width");
+  padding = 4 - ((width*3)%4);
 
 #ifdef DEBUG
   printf("padding = %d\n", padding);
-#endif  
-  
-  printf("TODO: void applyFilterToPixelArray(unsigned char* pixelArray, int width, int height, int isGrayscale)\n");
+#endif
+
+	for(int i = 0; i < height; i++) {
+		unsigned char * rowStart = pixelArray + i * (width * 3 + padding);
+		applyFilterToRow(rowStart, width, isGrayscale);
+	}
 }
 
 void parseHeaderAndApplyFilter(unsigned char* bmpFileAsBytes, int isGrayscale) {
@@ -98,10 +101,10 @@ void parseHeaderAndApplyFilter(unsigned char* bmpFileAsBytes, int isGrayscale) {
   int height = 0;
   unsigned char* pixelArray = NULL;
 
-  printf("TODO: set offsetFirstBytePixelArray\n");
-  printf("TODO: set width\n");
-  printf("TODO: set height\n");
-  printf("TODO: set the pixelArray to the start of the pixel array\n");
+  offsetFirstBytePixelArray = *(int*)(bmpFileAsBytes+10);
+  width = *(int*) (bmpFileAsBytes+4);
+  height = *(int*) (bmpFileAsBytes+8);
+  pixelArray = bmpFileAsBytes;
 
 #ifdef DEBUG
   printf("offsetFirstBytePixelArray = %u\n", offsetFirstBytePixelArray);
@@ -118,7 +121,7 @@ int main(int argc, char **argv) {
   unsigned fileSizeInBytes = 0;
   unsigned char* bmpFileAsBytes = NULL;
   FILE *stream = NULL;
-  
+
   stream = parseCommandLine(argc, argv, &grayscale);
   fileSizeInBytes = getFileSizeInBytes(stream);
 
