@@ -82,7 +82,7 @@ void applyThresholdToPixel(unsigned char* pixel) {
 	unsigned char r = *(pixel + 2);
 	unsigned char avg = getAverageIntensity(b, g, r);
 
-	if(avg > 128) {
+	if(avg >= 128) {
 		*pixel = 255;
 		*(pixel + 1) = 255;
 		*(pixel + 2) = 255;
